@@ -1,5 +1,7 @@
 #!/bin/bash
 
+OMARCHY_INSTALL=""
+
 # Enable strict mode
 set -o errexit -o errtrace -o nounset -o pipefail
 
