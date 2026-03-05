@@ -113,6 +113,8 @@ echo "Making adjustments to Omarchy install scripts to support CachyOS..."
 echo "# DEBUG PRINT STATEMENT: OMARCHYCLONEDIR EXPANSION"
 echo "$OMARCHYCLONEDIR"
 cd $OMARCHYCLONEDIR
+echo "# DEBUG PRINT STATEMENT: POST cd OMARCHYCLONEDIR pwd"
+pwd
 
 # Remove tldr installation to prevent conflict with tealdeer install.
 sed -i '/tldr/d' install/omarchy-base.packages
@@ -143,8 +145,8 @@ sed -i '/run_logged \$OMARCHY_INSTALL\/post-install\/pacman\.sh/d' install/post-
 
 # Update mise activation to support both bash and fish
 sed -i 's/omarchy-cmd-present mise && eval "\$(mise activate bash)"/if [ "\$SHELL" = "\/bin\/bash" ] \&\& command -v mise \&> \/dev\/null; then\n  eval "\$(mise activate bash)"\nelif [ "\$SHELL" = "\/bin\/fish" ] \&\& command -v mise \&> \/dev\/null; then\n  mise activate fish | source\nfi/' config/uwsm/env
-echo "# DEBUG STATEMENT: VALUE OF PWD COMMAND"
-echo pwd
+echo "# DEBUG STATEMENT: VALUE OF PWD COMMAND - Pre copy to local"
+pwd
 
 # Copy omarchy installation files to ~/.local/share/omarchy
 mkdir -p ~/.local/share/omarchy
@@ -172,8 +174,14 @@ echo ""
 echo "Press Enter to begin the installation of Omarchy..."
 read -r
 
-rm "./config/hardware/nvidia.sh"
-rm "./config/omarchy-ai-skill.sh"
+echo "# DEBUG STATEMENT: VALUE OF pwd"
+echo pwd
+
+echo "# DEBUG NVIDIA SCRIPT PATH"
+echo $(realpath ./install/config/hardware/nvidia.sh)
+
+rm "./install/config/hardware/nvidia.sh"
+rm "./install/config/omarchy-ai-skill.sh"
 
 # Run the modified install.sh script 
 chmod +x install.sh
