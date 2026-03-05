@@ -1,5 +1,34 @@
 #!/bin/bash
 
+# Enable strict mode
+set -o errexit -o errtrace -o nounset -o pipefail
+
+# Print a python-like traceback: message + stack frames
+bash_traceback() {
+  local err=$?
+  local msg=${1:-"Error"}
+  echo "$msg (exit $err)" >&2
+
+  local i=0
+  local func file line
+  # FUNCNAME[0] is this function; skip frame 0 and the trap frame
+  for ((i=1; i<${#FUNCNAME[@]}; i++)); do
+    func=${FUNCNAME[$i]}
+    # BASH_SOURCE and BASH_LINENO align such that BASH_SOURCE[i] is the file in which FUNCNAME[i] was defined,
+    # and BASH_LINENO[i-1] is the line number in that file where the call came from.
+    file=${BASH_SOURCE[$i]}
+    line=${BASH_LINENO[$i-1]:-?}
+    printf '  File "%s", line %s, in %s\n' "$file" "$line" "${func:-main}" >&2
+  done
+}
+
+# Trap ERR and print traceback; ERR trap inherits into functions and sourced scripts with errtrace
+trap 'bash_traceback "Traceback (most recent call last):"' ERR
+
+# Optionally show the failing command and line number (more like bash's default)
+trap 'echo "Failed at line $LINENO: $BASH_COMMAND" >&2' EXIT
+
+
 # Check if git is installed
 if ! command -v git &> /dev/null; then
     echo "Error: git is not installed. Please install git before running this script."
@@ -14,6 +43,8 @@ fi
 
 echo "Successfully extracted omarchy archive."
 
+# this is fucking stupid lol
+if ! which yay; then
 # Check if yay is installed
 if ! command -v yay &> /dev/null; then
     echo "yay is not installed. Installing yay..."
@@ -39,12 +70,17 @@ if ! command -v yay &> /dev/null; then
 else
     echo "yay is already installed."
 fi
+fi
 
-# Receive the Omarchy signing key
-sudo pacman-key --recv-keys F0134EE680CAC571
+# receive if missing
+if ! pacman-key --list-keys | grep -qi F0134EE680CAC571; then
+  sudo pacman-key --recv-keys F0134EE680CAC571
+fi
 
-# Locally sign and trust the key
-sudo pacman-key --lsign-key F0134EE680CAC571
+# locally sign if not already signed
+if ! pacman-key --list-sigs F0134EE680CAC571 | grep -q "sig.*$HOSTNAME\|sig.*$(whoami)"; then
+  sudo pacman-key --lsign-key F0134EE680CAC571
+fi
 
 # Add omarchy repository to pacman.conf
 echo -e "\n[omarchy]\nSigLevel = Optional TrustedOnly\nServer = https://pkgs.omarchy.org/\$arch" | sudo tee -a /etc/pacman.conf > /dev/null
@@ -87,8 +123,11 @@ sed -i '/linux-cachyos/ ! s/pacman -Q linux/pacman -Q linux-cachyos/' bin/omarch
 sed -i '/run_logged \$OMARCHY_INSTALL\/preflight\/pacman\.sh/d' install/preflight/all.sh
 
 # Replace nvidia.sh with custom CachyOS 580xx Driver Logic
-cp ../bin/nvidia.sh install/config/hardware/nvidia.sh
-chmod +x install/config/hardware/nvidia.sh
+#cp ../bin/nvidia.sh install/config/hardware/nvidia.sh
+#chmod +x install/config/hardware/nvidia.sh
+
+rm -f "$OMARCHY_INSTALL/config/hardware/nvidia.sh"
+rm -f "$OMARCHY_INSTALL/config/omarchy-ai-skill.sh"
 
 # Remove plymouth.sh source line from install.sh
 sed -i '/run_logged \$OMARCHY_INSTALL\/login\/plymouth\.sh/d' install/login/all.sh
