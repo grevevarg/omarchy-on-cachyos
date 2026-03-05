@@ -40,7 +40,7 @@ echo "Clone Omarchy from repo..."
 if ! git clone https://www.github.com/basecamp/omarchy ../omarchy; then
     echo "Error: Failed to clone Omarchy repo."
 fi
-
+OMARCHYCLONEDIR=$(realpath ../omarchy)
 
 
 echo "Successfully extracted omarchy archive."
@@ -111,7 +111,7 @@ echo ""
 echo "Making adjustments to Omarchy install scripts to support CachyOS..."
 
 # Navigate to Omarchy install scripts
-cd ../omarchy
+cd $OMARCHYCLONEDIR
 
 # Remove tldr installation to prevent conflict with tealdeer install.
 sed -i '/tldr/d' install/omarchy-base.packages
