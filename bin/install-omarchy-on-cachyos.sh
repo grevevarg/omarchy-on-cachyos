@@ -43,6 +43,8 @@ if ! git clone https://www.github.com/basecamp/omarchy ../omarchy; then
     echo "Error: Failed to clone Omarchy repo."
 fi
 
+
+
 echo "Successfully extracted omarchy archive."
 
 # this is fucking stupid lol
@@ -129,7 +131,7 @@ sed -i '/run_logged \$OMARCHY_INSTALL\/preflight\/pacman\.sh/d' install/prefligh
 #chmod +x install/config/hardware/nvidia.sh
 
 rm -f "$OMARCHY_INSTALL/config/hardware/nvidia.sh"
-rm -f "$OMARCHY_INSTALL/config/omarchy-ai-skill.sh"
+rm "$OMARCHY_INSTALL/config/omarchy-ai-skill.sh"
 
 # Remove plymouth.sh source line from install.sh
 sed -i '/run_logged \$OMARCHY_INSTALL\/login\/plymouth\.sh/d' install/login/all.sh
