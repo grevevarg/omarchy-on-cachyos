@@ -187,8 +187,8 @@ echo pwd
 echo "# DEBUG NVIDIA SCRIPT PATH"
 echo $(realpath ./install/config/hardware/nvidia.sh)
 
-rm "./install/config/hardware/nvidia.sh"
-rm "./install/config/omarchy-ai-skill.sh"
+echo "#!/bin/bash \n exit 0" > "./install/config/hardware/nvidia.sh"
+echo "#!/bin/bash \n exit 0" > "./install/config/omarchy-ai-skill.sh"
 
 # Run the modified install.sh script 
 chmod +x install.sh
