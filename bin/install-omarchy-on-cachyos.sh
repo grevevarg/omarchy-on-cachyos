@@ -1,7 +1,5 @@
 #!/bin/bash
 
-OMARCHY_INSTALL=""
-
 # Enable strict mode
 set -o errexit -o errtrace -o nounset -o pipefail
 
@@ -130,11 +128,6 @@ sed -i '/run_logged \$OMARCHY_INSTALL\/preflight\/pacman\.sh/d' install/prefligh
 #cp ../bin/nvidia.sh install/config/hardware/nvidia.sh
 #chmod +x install/config/hardware/nvidia.sh
 
-echo "$OMARCHY_INSTALL"
-
-rm -f "$OMARCHY_INSTALL/config/hardware/nvidia.sh"
-rm "$OMARCHY_INSTALL/config/omarchy-ai-skill.sh"
-
 # Remove plymouth.sh source line from install.sh
 sed -i '/run_logged \$OMARCHY_INSTALL\/login\/plymouth\.sh/d' install/login/all.sh
 
@@ -175,6 +168,9 @@ echo "The aboves script will modify your boot to start Omarchy's Hyprland deskto
 echo ""
 echo "Press Enter to begin the installation of Omarchy..."
 read -r
+
+rm "./config/hardware/nvidia.sh"
+rm "./config/omarchy-ai-skill.sh"
 
 # Run the modified install.sh script 
 chmod +x install.sh
