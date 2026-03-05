@@ -148,9 +148,16 @@ sed -i 's/omarchy-cmd-present mise && eval "\$(mise activate bash)"/if [ "\$SHEL
 echo "# DEBUG STATEMENT: VALUE OF PWD COMMAND - Pre copy to local"
 pwd
 
+echo "MOVING ONE DIR UP"
+cd ..
+pwd
+
+echo "DEBUG realpath TO OMARCHY SUBDIR"
+realpath ./omarchy/
+
 # Copy omarchy installation files to ~/.local/share/omarchy
 mkdir -p ~/.local/share/omarchy
-cp -r $(pwd) ~/.local/share/omarchy
+cp -r ./omarchy/* ~/.local/share/omarchy
 cd ~/.local/share/omarchy
 
 # Pause and prompt for acknowledgment to begin installation
