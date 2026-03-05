@@ -130,6 +130,8 @@ sed -i '/run_logged \$OMARCHY_INSTALL\/preflight\/pacman\.sh/d' install/prefligh
 #cp ../bin/nvidia.sh install/config/hardware/nvidia.sh
 #chmod +x install/config/hardware/nvidia.sh
 
+echo "$OMARCHY_INSTALL"
+
 rm -f "$OMARCHY_INSTALL/config/hardware/nvidia.sh"
 rm "$OMARCHY_INSTALL/config/omarchy-ai-skill.sh"
 
