@@ -110,6 +110,7 @@ echo ""
 echo "Making adjustments to Omarchy install scripts to support CachyOS..."
 
 # Navigate to Omarchy install scripts
+echo "# DEBUG PRINT STATEMENT: OMARCHYCLONEDIR EXPANSION"
 echo "$OMARCHYCLONEDIR"
 cd $OMARCHYCLONEDIR
 
@@ -142,10 +143,12 @@ sed -i '/run_logged \$OMARCHY_INSTALL\/post-install\/pacman\.sh/d' install/post-
 
 # Update mise activation to support both bash and fish
 sed -i 's/omarchy-cmd-present mise && eval "\$(mise activate bash)"/if [ "\$SHELL" = "\/bin\/bash" ] \&\& command -v mise \&> \/dev\/null; then\n  eval "\$(mise activate bash)"\nelif [ "\$SHELL" = "\/bin\/fish" ] \&\& command -v mise \&> \/dev\/null; then\n  mise activate fish | source\nfi/' config/uwsm/env
+echo "# DEBUG STATEMENT: VALUE OF PWD COMMAND"
+echo pwd
 
 # Copy omarchy installation files to ~/.local/share/omarchy
 mkdir -p ~/.local/share/omarchy
-cp -r . ~/.local/share/omarchy
+cp -r $(pwd) ~/.local/share/omarchy
 cd ~/.local/share/omarchy
 
 # Pause and prompt for acknowledgment to begin installation
